@@ -1,0 +1,53 @@
+(define (my-map f my-list)
+  (define (iter curr done)
+    (cond ((null? curr) done)
+          (else (iter
+                 (cdr curr)
+                 (append done (list (f (car curr))))))))
+  (iter my-list '()))
+
+(define (my-for-each f my-list)
+  (cond ((not (null? my-list))
+         (f (car my-list))
+         (my-for-each f (cdr my-list)))))
+
+(define (my-filter f my-list)
+  (cond ((null? my-list) '())
+        ((not (f (car my-list))) '())
+        (else (append (list (car my-list))
+                      (my-filter f (cdr my-list))))))
+
+(define (my-fold-right f init my-list)
+     (cond ((null? my-list) init)
+           (else (my-fold-right f (f init (car my-list)) (cdr my-list)))))
+(define (my-fold-right-no-init f my-list)
+  (my-fold-right f (car my-list) my-list))
+(define (my-fold-left f init my-list)
+  (my-fold-right f init (reverse my-list)))
+(define (my-fold-left-no-init f my-list)
+  (my-fold-right-no-init f (reverse my-list)))
+
+(define (my-flatten my-list)
+  (my-fold-right append '() my-list))
+
+(define (my-flatmap f my-list)
+  (my-flatten (my-map f my-list)))
+
+(define l '(1 2 3 4 5 6 7))
+(my-map (lambda (x) (* x 79)) l)
+(map (lambda (x) (* x 79)) l)
+(my-for-each display l)
+(for-each display l)
+(my-filter (lambda (x) (< x 5)) l)
+(my-fold-right + 0 l)
+(my-fold-right (lambda (x y) (if (> x y) x y)) 0 l)
+(my-fold-right-no-init - l)
+(my-fold-left-no-init - l)
+(my-flatten '(l))
+(my-flatten '(((1 2 3 4 5 6 7 8 9))))
+(my-flatten '((1 2) (3 4) (5 6) (7 8)))
+(my-flatten '(((1 2) (3 4)) ((5 6) (7 8))))
+(my-map (lambda (x) (cons (* (car x) (cadr x)) '())) '((1 2) (3 4) (5 6) (7 8)))
+(my-flatmap (lambda (x) (cons (* (car x) (cadr x)) '())) '((1 2) (3 4) (5 6) (7 8)))
+  
+                             
